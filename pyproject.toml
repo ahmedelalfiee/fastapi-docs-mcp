@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastapi-docs-mcp"
+version = "0.1.0"
+description = "MCP server that lets AI assistants search the FastAPI documentation, with evaluated retrieval."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = ["mcp>=2.3,<3", "pydantic>=2.7"]
+
+[project.optional-dependencies]
+dense = ["openai>=2.0"]
+dev = ["pytest>=8", "anyio>=4"]
+
+[project.scripts]
+fastapi-docs-mcp = "docs_mcp.server:main"
+
+[tool.setuptools]
+packages = ["docs_mcp"]
+
+[tool.setuptools.package-data]
+docs_mcp = ["data/*.jsonl", "data/*.md"]
