@@ -73,3 +73,19 @@ async def test_runs_over_stdio_like_a_desktop_client():
     async with Client(params) as c:
         r = await c.call_tool("search_docs", {"query": "background tasks after response", "k": 1})
     assert r.structured_content["hits"][0]["page"] == "tutorial/background-tasks"
+
+
+def test_key_without_openai_package_falls_back_to_bm25(monkeypatch):
+    import builtins
+
+    from docs_mcp import index as ix
+    real_import = builtins.__import__
+
+    def no_openai(name, *a, **k):
+        if name == "openai":
+            raise ImportError
+        return real_import(name, *a, **k)
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+    monkeypatch.delenv("DOCS_MCP_RETRIEVER", raising=False)
+    monkeypatch.setattr(builtins, "__import__", no_openai)
+    assert ix.DocsIndex(pages={"p": "# P\n\n" + "words " * 40}).mode == "bm25"

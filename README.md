@@ -29,7 +29,11 @@ say when the docs don't cover something.
 **Claude Code**
 
 ```bash
+# keyword search, no key needed
 claude mcp add fastapi-docs -- uvx --from git+https://github.com/ahmedelalfiee/fastapi-docs-mcp fastapi-docs-mcp
+
+# embedding search (better on questions worded differently from the docs)
+claude mcp add fastapi-docs -e OPENAI_API_KEY=sk-... -- uvx --from "fastapi-docs-mcp[dense] @ git+https://github.com/ahmedelalfiee/fastapi-docs-mcp" fastapi-docs-mcp
 ```
 
 **Claude Desktop / Cursor** (`claude_desktop_config.json` or `.cursor/mcp.json`)
@@ -39,7 +43,7 @@ claude mcp add fastapi-docs -- uvx --from git+https://github.com/ahmedelalfiee/f
   "mcpServers": {
     "fastapi-docs": {
       "command": "uvx",
-      "args": ["--from", "git+https://github.com/ahmedelalfiee/fastapi-docs-mcp", "fastapi-docs-mcp"],
+      "args": ["--from", "fastapi-docs-mcp[dense] @ git+https://github.com/ahmedelalfiee/fastapi-docs-mcp", "fastapi-docs-mcp"],
       "env": { "OPENAI_API_KEY": "optional: enables embedding search" }
     }
   }
@@ -61,7 +65,7 @@ bodies?"* and it will call `search_docs` and answer with links.
 
 | Variable | Effect |
 |---|---|
-| `OPENAI_API_KEY` | If set (and the `dense` extra installed), search uses `text-embedding-3-small` instead of BM25 |
+| `OPENAI_API_KEY` | If set and the `dense` extra is installed, search uses `text-embedding-3-small`; otherwise it falls back to BM25 instead of failing |
 | `DOCS_MCP_RETRIEVER` | Force `bm25` or `dense` |
 | `DOCS_MCP_CACHE` | Where embeddings are cached (default `~/.cache/fastapi-docs-mcp/`). The docs are embedded once (< $0.01) |
 

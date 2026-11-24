@@ -133,13 +133,24 @@ class Dense:
         return [(self.chunks[i], s) for s, i in scored[:k]]
 
 
+def _dense_available() -> bool:
+    """Use embeddings only when a key is set AND the optional `dense` extra is installed."""
+    if not os.getenv("OPENAI_API_KEY"):
+        return False
+    try:
+        import openai  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
 class DocsIndex:
     def __init__(self, pages: dict[str, str] | None = None, mode: str | None = None):
         self.pages = pages if pages is not None else load_pages()
         self.titles = {p: _title(t, p) for p, t in self.pages.items()}
         self.chunks = [c for p, t in self.pages.items() for c in chunk_sections(p, t)]
         self.bm25 = BM25(self.chunks)
-        self.mode = mode or os.getenv("DOCS_MCP_RETRIEVER") or ("dense" if os.getenv("OPENAI_API_KEY") else "bm25")
+        self.mode = mode or os.getenv("DOCS_MCP_RETRIEVER") or ("dense" if _dense_available() else "bm25")
         self.dense = Dense(self.chunks) if self.mode == "dense" else None
 
     def search(self, query: str, k: int = 5) -> list[tuple[Chunk, float]]:
