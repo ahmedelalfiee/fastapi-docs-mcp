@@ -13,18 +13,12 @@ BM25 (recall@5 **0.885**); with an OpenAI key it switches to embeddings (recall@
 
 ## In Claude Code
 
-```text
-> Using the FastAPI docs, how do I force every request to use HTTPS?
+<p align="center"><img src="docs/demo.gif" width="860" alt="Claude Code calling search_docs and get_page on the fastapi-docs MCP server, then answering with HTTPSRedirectMiddleware"></p>
 
-  fastapi-docs - search_docs(query: "force HTTPS redirect all requests") (MCP)
-  → retriever: dense · hits include advanced/middleware
-
-● Use HTTPSRedirectMiddleware ... app.add_middleware(HTTPSRedirectMiddleware)
-  Source: https://fastapi.tiangolo.com/advanced/middleware/
-```
-
-This is a question keyword search gets wrong (its top hits are middleware basics, SQL databases
-and testing); with embeddings the right page is retrieved and the answer cites it.
+Claude Code calls `search_docs` (embedding mode), then `get_page` on `advanced/middleware`, and
+answers with `HTTPSRedirectMiddleware`, quoting the page. Keyword search alone misses this
+question (its top hits are middleware basics, SQL databases and testing), which is why the
+server switches to embeddings when a key is available.
 
 ## Tools
 
