@@ -11,6 +11,21 @@ The retrieval behind it isn't guessed: it comes from [rag-eval-lab](https://gith
 where the same chunking and retrievers were measured on 52 labelled questions. Offline it uses
 BM25 (recall@5 **0.885**); with an OpenAI key it switches to embeddings (recall@5 **0.962**).
 
+## In Claude Code
+
+```text
+> Using the FastAPI docs, how do I force every request to use HTTPS?
+
+  fastapi-docs - search_docs(query: "force HTTPS redirect all requests") (MCP)
+  → retriever: dense · top hit: advanced/middleware
+
+● Use HTTPSRedirectMiddleware ... app.add_middleware(HTTPSRedirectMiddleware)
+  Source: https://fastapi.tiangolo.com/advanced/middleware/
+```
+
+This is a question keyword search gets wrong (its top hits are middleware basics, SQL databases
+and testing); with embeddings the right page comes back first.
+
 ## Tools
 
 | Tool | Input | Returns |
