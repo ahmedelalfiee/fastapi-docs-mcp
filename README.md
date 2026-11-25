@@ -3,6 +3,7 @@
 [![ci](https://github.com/ahmedelalfiee/fastapi-docs-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/ahmedelalfiee/fastapi-docs-mcp/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.11%20|%203.12%20|%203.13-blue)
 ![MCP](https://img.shields.io/badge/MCP-Python%20SDK%202.x-black)
+[![fastapi-docs-mcp MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/ahmedelalfiee/fastapi-docs-mcp/badges/score.svg)](https://glama.ai/mcp/servers/ahmedelalfiee/fastapi-docs-mcp)
 
 An [MCP](https://modelcontextprotocol.io) server that lets AI assistants such as Claude Code,
 Claude Desktop and Cursor **search the FastAPI documentation** while they work, and cite it.
@@ -19,6 +20,10 @@ Claude Code calls `search_docs` (embedding mode), then `get_page` on `advanced/m
 answers with `HTTPSRedirectMiddleware`, quoting the page. Keyword search alone misses this
 question (its top hits are middleware basics, SQL databases and testing), which is why the
 server switches to embeddings when a key is available.
+
+Listed and verified on **Glama**, the MCP server directory:
+
+[![fastapi-docs-mcp MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/ahmedelalfiee/fastapi-docs-mcp/badges/card.svg)](https://glama.ai/mcp/servers/ahmedelalfiee/fastapi-docs-mcp)
 
 ## Tools
 
