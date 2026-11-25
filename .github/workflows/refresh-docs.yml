@@ -1,0 +1,43 @@
+name: refresh-docs
+# Monthly: rebuild the bundled FastAPI docs snapshot from upstream. If anything changed and the
+# retrieval quality gate still passes, open a pull request for review. Nothing is merged automatically.
+on:
+  schedule:
+    - cron: "23 5 1 * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Fetch the latest English FastAPI docs
+        run: |
+          git clone --depth 1 --filter=blob:none --sparse https://github.com/fastapi/fastapi.git upstream
+          git -C upstream sparse-checkout set docs/en/docs
+          echo "UPSTREAM_SHA=$(git -C upstream rev-parse HEAD)" >> "$GITHUB_ENV"
+      - name: Rebuild the snapshot
+        run: python scripts/refresh_docs.py upstream/docs/en/docs "$UPSTREAM_SHA" | tee refresh.log
+      - name: Quality gate on the new snapshot
+        run: |
+          pip install ".[dev]"
+          python -m pytest -q
+      - name: Open a pull request if the docs changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/refresh-docs
+          delete-branch: true
+          add-paths: docs_mcp/data/
+          commit-message: "Refresh FastAPI docs snapshot to upstream ${{ env.UPSTREAM_SHA }}"
+          title: "Refresh FastAPI docs snapshot"
+          body: |
+            Monthly refresh of the bundled FastAPI documentation, rebuilt from upstream
+            [`${{ env.UPSTREAM_SHA }}`](https://github.com/fastapi/fastapi/commit/${{ env.UPSTREAM_SHA }}).
+
+            The full test suite, including the retrieval quality gate (recall@5 ≥ 0.85 on 52
+            labelled questions), passed on the new snapshot before this PR was opened.

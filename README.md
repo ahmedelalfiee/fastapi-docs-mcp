@@ -105,8 +105,9 @@ labelled questions through `search_docs` and fails CI if recall@5 drops below 0.
 
 ## Limitations
 
-- The docs are a **snapshot** (FastAPI commit `05e6df7`, Nov 2026). Rebuild `docs_mcp/data/pages.jsonl`
-  with rag-eval-lab's `scripts/build_corpus.py` to refresh it.
+- The docs are a **snapshot**, refreshed monthly: a scheduled workflow rebuilds it from upstream
+  FastAPI, re-runs the retrieval quality gate, and opens a pull request only if the docs changed
+  and quality held (`.github/workflows/refresh-docs.yml`, `scripts/refresh_docs.py`).
 - English docs only; code examples included by reference in the docs (`{* ... *}`) are not indexed.
 - The embedding cache is a JSON file, fine for ~1,000 chunks, not for large corpora.
 
